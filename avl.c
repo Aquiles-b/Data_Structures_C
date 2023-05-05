@@ -10,16 +10,16 @@ struct aluno* getAluno1(){
     struct aluno* retorno = malloc(sizeof(struct aluno));
     if(!retorno)
         exit(1);
-    retorno->nome = malloc(sizeof("Paulo Ricardo Lisboa de Almeida"));//sizeof conta o \0
+    retorno->nome = malloc(sizeof("Bruno Aquiles de Lima"));//sizeof conta o \0
 	if(!retorno->nome)
 		exit(1);
-    retorno->nomeDinf = malloc(sizeof("paulo"));
+    retorno->nomeDinf = malloc(sizeof("bal22"));
     if(!retorno->nomeDinf)
         exit(1);
     
-	strcpy(retorno->nome, "Paulo Ricardo Lisboa de Almeida");
-    strcpy(retorno->nomeDinf, "paulo");
-    retorno->grr = 1234;
+	strcpy(retorno->nome, "Bruno Aquiles de Lima");
+    strcpy(retorno->nomeDinf, "bal22");
+    retorno->grr = 20221230;
 
 	return retorno;
 }

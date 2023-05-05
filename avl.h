@@ -3,7 +3,9 @@
 
 struct nodo {
     int chave;
-    //coloque demais itens aqui
+    struct nodo *pai;
+    struct nodo *fe;
+    struct nodo *fd;
 };
 
 struct aluno{
