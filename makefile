@@ -1,9 +1,9 @@
-parametrosCompilacao=-Wall #-Wshadow
+parametrosCompilacao=-Wall -g #-Wshadow
 nomePrograma=trab
 
 all: $(nomePrograma)
 
-$(nomePrograma): main.o avl.o
+$(nomePrograma): main.o avl.o 
 	gcc -o $(nomePrograma) main.o avl.o $(parametrosCompilacao)
 
 main.o: main.c

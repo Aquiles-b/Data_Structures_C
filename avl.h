@@ -21,6 +21,9 @@ struct aluno* getAluno2();
 
 void imprimirDadosAlunos();
 
+//cria um nodo;
+struct nodo *criaNodo(int chave);
+
 //retorna NULL se não foi possível inserir
 struct nodo* inserir(struct nodo** raiz, int chave);
 
