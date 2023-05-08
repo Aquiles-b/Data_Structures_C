@@ -53,22 +53,38 @@ void imprimirDadosAlunos(){
     free(aluno);
 }
 
-struct nodo* inserir(struct nodo** raiz, int chave){
+/* Cria um nodo. Retorna NULL em caso de problemas.*/
+struct nodo *criaNodo()
+{
+    struct nodo *aux = malloc(sizeof(struct nodo));
+    if (aux == NULL)
+        return NULL;
+
+    return aux;
+}
+
+struct nodo *inserir(struct nodo **raiz, int chave)
+{
+
 	return NULL;
 }
 
-int excluir(struct nodo** raiz, int chave){
+int excluir(struct nodo **raiz, int chave)
+{
 	return -99;
 }
 
-struct nodo* buscar(struct nodo* nodo, int chave){
+struct nodo *buscar(struct nodo *nodo, int chave)
+{
 	return NULL;
 }
 
-void imprimirEmOrdem(struct nodo* raiz){
+void imprimirEmOrdem(struct nodo *raiz)
+{
 	printf("Imprimindo em ordem\n");
 }
 
-void imprimirEmLargura(struct nodo* raiz){
+void imprimirEmLargura(struct nodo *raiz)
+{
 	printf("Imprimindo em largura\n");
 }
