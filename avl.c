@@ -201,6 +201,7 @@ void imprimirEmLargura(struct nodo *raiz)
     struct nodo *aux;
     struct fila *fNivel = iniciaFila();
     struct fila *fProxNivel = iniciaFila();
+    int nivel = 0;
 
     addItemFila(fProxNivel, raiz);
 
@@ -213,6 +214,7 @@ void imprimirEmLargura(struct nodo *raiz)
             addItemFila(fProxNivel, aux->fe);
             addItemFila(fProxNivel, aux->fd);
         }
-        printf ("\n");
+        printf ("[%d]\n", nivel);
+        nivel++;
     }
 }
