@@ -106,6 +106,8 @@ struct nodo *rotacionaEsq(struct nodo *p)
     p->pai = q;
     p->fd = q->fe;
     q->fe = p;
+    q->balanco = 0;
+    p->balanco = 0;
 
     return q;
 }
@@ -117,6 +119,8 @@ struct nodo *rotacionaDir(struct nodo *p)
     p->pai = r;
     p->fe = r->fd;
     r->fd = p;
+    r->balanco = 0;
+    p->balanco = 0;
 
     return r;
 }
@@ -135,6 +139,15 @@ struct nodo *duplaRotDir(struct nodo *p)
     p->pai = r;
     q->pai = r;
 
+    if (r->balanco == 1) {
+        p->balanco = -1;
+        q->balanco = 0;
+    } else {
+        p->balanco = 0;
+        q->balanco = 1;
+    }
+    r->balanco = 0;
+
     return r;
 }
 
@@ -152,15 +165,26 @@ struct nodo *duplaRotEsq(struct nodo *p)
     p->pai = r;
     q->pai = r;
 
+    if (r->balanco == -1) {
+        p->balanco = -1;
+        q->balanco = 0;
+    } else {
+        p->balanco = 0;
+        q->balanco = 1;
+    }
+    r->balanco = 0;
+
     return r;
 }
 
 struct nodo *rebalancear(struct nodo *n)
 {
-    if (n->fd != NULL && n->fd->balanco == 1)
-        return  rotacionaEsq(n);
-    if (n->fd != NULL && n->fd->balanco == -1)
-        return duplaRotDir(n);
+    if (n->balanco == 2) {
+        if (n->fd != NULL && n->fd->balanco == 1)
+            return  rotacionaEsq(n);
+        if (n->fd != NULL && n->fd->balanco == -1)
+            return duplaRotDir(n);
+    }
     if (n->fe != NULL && n->fe->balanco == -1)
         return rotacionaDir(n);
     if (n->fe != NULL && n->fe->balanco == 1)
@@ -190,6 +214,8 @@ void atualizaBalanco(struct nodo *nodo, struct nodo **raiz)
     if (pai->balanco == 2 || pai->balanco == -2) {
         if (pai->pai == NULL)
             *raiz = rebalancear(pai);
+        else
+            rebalancear(pai);
     }
 }
 
