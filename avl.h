@@ -3,6 +3,7 @@
 
 struct nodo {
     int chave;
+    int balanco;
     struct nodo *pai;
     struct nodo *fe;
     struct nodo *fd;

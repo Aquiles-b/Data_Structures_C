@@ -73,6 +73,7 @@ struct nodo *criaNodo(int chave)
     n->fe = NULL;
     n->fd = NULL;
     n->pai = NULL;
+    n->balanco = 0;
 
     return n;
 }
@@ -98,11 +99,107 @@ struct nodo *insereNodo(struct nodo *n, int chave)
     return n->fd;
 }
 
+struct nodo *rotacionaEsq(struct nodo *p)
+{
+    struct nodo *q = p->fd;
+    q->pai = p->pai;
+    p->pai = q;
+    p->fd = q->fe;
+    q->fe = p;
+
+    return q;
+}
+
+struct nodo *rotacionaDir(struct nodo *p)
+{
+    struct nodo *r = p->fe;
+    r->pai = p->pai;
+    p->pai = r;
+    p->fe = r->fd;
+    r->fd = p;
+
+    return r;
+}
+
+struct nodo *duplaRotDir(struct nodo *p)
+{
+    struct nodo *q, *r;
+    q = p->fd;
+    r = q->fe;
+
+    p->fd = r->fe;
+    q->fe = r->fd;
+    r->fe = p;
+    r->fd = q;
+    r->pai = p->pai;
+    p->pai = r;
+    q->pai = r;
+
+    return r;
+}
+
+struct nodo *duplaRotEsq(struct nodo *p)
+{
+    struct nodo *q, *r;
+    q = p->fe;
+    r = q->fd;
+
+    p->fe = r->fd;
+    q->fd = r->fe;
+    r->fe = q;
+    r->fd = p;
+    r->pai = p->pai;
+    p->pai = r;
+    q->pai = r;
+
+    return r;
+}
+
+struct nodo *rebalancear(struct nodo *n)
+{
+    if (n->fd != NULL && n->fd->balanco == 1)
+        return  rotacionaEsq(n);
+    if (n->fd != NULL && n->fd->balanco == -1)
+        return duplaRotDir(n);
+    if (n->fe != NULL && n->fe->balanco == -1)
+        return rotacionaDir(n);
+    if (n->fe != NULL && n->fe->balanco == 1)
+        return duplaRotEsq(n);
+
+    return NULL;
+}
+
+void atualizaBalanco(struct nodo *nodo, struct nodo **raiz)
+{
+    struct nodo *pai = nodo->pai;
+    if (nodo == pai->fe)
+        pai->balanco--;
+    else
+     pai->balanco++;
+
+    while (pai->pai != NULL && pai->balanco != 2 && pai->balanco != -2) {
+        nodo = pai;
+        pai = pai->pai;
+        if (nodo->balanco == 0)
+            return;
+        if (nodo == pai->fe)
+            pai->balanco--;
+        else
+            pai->balanco++;
+    }
+    if (pai->balanco == 2 || pai->balanco == -2) {
+        if (pai->pai == NULL)
+            *raiz = rebalancear(pai);
+    }
+}
+
 struct nodo *inserir(struct nodo **raiz, int chave)
 {
     struct nodo *n = insereNodo(*raiz, chave);
     if (n == NULL)
         return NULL;
+
+    atualizaBalanco(n, raiz);
 
     return n;
 }
@@ -208,13 +305,14 @@ void imprimirEmLargura(struct nodo *raiz)
     while (!filaVazia(fProxNivel)) {
         fNivel = fProxNivel;
         fProxNivel = iniciaFila();
+        printf ("[%d] ", nivel);
         while (!filaVazia(fNivel)) {
             aux = retiraItemFila(fNivel);
-            printf ("%d ", aux->chave);
+            printf ("%d(%d) ", aux->chave, aux->balanco);
             addItemFila(fProxNivel, aux->fe);
             addItemFila(fProxNivel, aux->fd);
         }
-        printf ("[%d]\n", nivel);
+        printf ("\n");
         nivel++;
     }
 }
