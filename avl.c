@@ -107,6 +107,12 @@ struct nodo *rotacionaEsq(struct nodo *p)
     p->fd = q->fe;
     if (q->fe != NULL)
         q->fe->pai = p;
+    if (q->pai != NULL) {
+        if (q->pai->fe == p)
+            q->pai->fe = q;
+        else
+            q->pai->fd = q;
+    }
     q->fe = p;
 
     return q;
@@ -120,6 +126,12 @@ struct nodo *rotacionaDir(struct nodo *p)
     p->fe = r->fd;
     if (r->fd != NULL)
         r->fd->pai = p;
+    if (r->pai != NULL) {
+        if (r->pai->fe == p)
+            r->pai->fe = r;
+        else
+            r->pai->fd = r;
+    }
     r->fd = p;
 
     return r;
@@ -128,15 +140,21 @@ struct nodo *rotacionaDir(struct nodo *p)
 struct nodo *rebalancear(struct nodo *n)
 {
     if (n->balanco == 2) {
-        if (n->fd->balanco == 1)
+        if (n->fd->balanco == 1) {
+            n->balanco = 0;
+            n->fd->balanco = 0;
             return rotacionaEsq(n);
+        }
         if (n->fd->balanco == -1) {
             rotacionaDir(n->fd);
             return rotacionaEsq(n);
         }
     }
-    if (n->fe->balanco == -1)
+    if (n->fe->balanco == -1) {
+        n->balanco = 0;
+        n->fe->balanco = 0;
         return rotacionaDir(n);
+    }
     if (n->fe->balanco == 1) {
         rotacionaEsq(n->fe);
         return rotacionaDir(n);

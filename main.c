@@ -10,9 +10,9 @@ int main(){
     inserir(&raiz, 1);
     inserir(&raiz, 6);
     inserir(&raiz, 8);
+    inserir(&raiz, 0);
     imprimirEmLargura(raiz);
     /* printf ("\n"); */
-    /* inserir(&raiz, 0); */
     /* imprimirEmLargura(raiz); */
     /* printf ("\n"); */
 
