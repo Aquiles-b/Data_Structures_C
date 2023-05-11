@@ -177,12 +177,6 @@ struct nodo *rebalancear(struct nodo *n)
             noPai = rotacionaDir(n);
         }
     }
-    if (noPai->pai != NULL){
-        if (noPai->pai->fe == n)
-            noPai->pai->fe = noPai;
-        else
-            noPai->pai->fd = noPai;  
-    }
     corrigeBalanco(noPai);
 
     return noPai;
@@ -322,6 +316,8 @@ int filaVazia(struct fila *f)
 
 void imprimirEmLargura(struct nodo *raiz)
 {
+    if (raiz == NULL)
+        return;
     struct nodo *aux;
     struct fila *fNivel = iniciaFila();
     struct fila *fProxNivel = iniciaFila();
