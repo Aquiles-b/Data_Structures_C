@@ -188,7 +188,7 @@ int balanceado(struct nodo *no)
     return no->balanco != 2 && no->balanco != -2;
 }
 
-void atualizaBalanco(struct nodo *nodo, struct nodo **raiz)
+void atualizaBalancoInserir(struct nodo *nodo, struct nodo **raiz)
 {
     struct nodo *pai = nodo->pai;
     if (ehRaiz(nodo))
@@ -226,14 +226,80 @@ struct nodo *inserir(struct nodo **raiz, int chave)
     if (n == NULL)
         return NULL;
 
-    atualizaBalanco(n, raiz);
+    atualizaBalancoInserir(n, raiz);
 
     return n;
 }
 
+int ehFolha(struct nodo *no)
+{
+    if (no == NULL)
+        return -1;
+
+    return no->fe == NULL && no->fd == NULL;
+}
+
+void atualizaBalancoExcluir(struct nodo *nodo, struct nodo **raiz)
+{
+    struct nodo *pai = nodo->pai;
+    if (nodo == pai->fe) {
+        pai->balanco++;
+        pai->fe = NULL;
+    }
+    else {
+        pai->balanco--;
+        pai->fd = NULL;
+    }
+
+    while (!ehRaiz(pai) && pai->balanco == 0) {
+        nodo = pai;
+        pai = pai->pai;
+        if (nodo->balanco == 0)
+            return;
+        if (nodo == pai->fe)
+            pai->balanco++;
+        else
+            pai->balanco--;
+    }
+    if (!balanceado(pai)) {
+        if (ehRaiz(pai))
+            *raiz = rebalancear(pai);
+        else
+            rebalancear(pai);
+    }
+}
+
+struct nodo *antecessorNodoAux(struct nodo *no)
+{
+    if (no->fd == NULL)
+        return no;
+
+    return antecessorNodoAux(no->fd);
+}
+
+struct nodo *antecessorNodo(struct nodo *no)
+{
+    if (no == NULL)
+        return NULL;
+
+    return antecessorNodoAux(no->fe);
+}
+
 int excluir(struct nodo **raiz, int chave)
 {
-    return -99;
+    struct nodo *no, *ant;
+    no = buscar(*raiz, chave);
+    if (no == NULL)
+        return 0;
+    if (!ehFolha(no)) {
+        ant = antecessorNodo(no);
+        no->chave = ant->chave;
+        no = ant;
+    }
+    atualizaBalancoExcluir(no, raiz);
+    free(no);
+
+    return 1;
 }
 
 struct nodo *buscar(struct nodo *nodo, int chave)
