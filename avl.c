@@ -218,6 +218,10 @@ void atualizaBalanco(struct nodo *nodo, struct nodo **raiz)
 
 struct nodo *inserir(struct nodo **raiz, int chave)
 {
+    if (*raiz == NULL) {
+        *raiz = criaNodo(chave);
+        return *raiz;
+    }
     struct nodo *n = insereNodo(*raiz, chave);
     if (n == NULL)
         return NULL;

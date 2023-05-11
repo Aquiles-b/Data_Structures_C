@@ -5,20 +5,11 @@
 int main(){
 	imprimirDadosAlunos();
 
-    struct nodo *raiz = criaNodo(5);
-    inserir(&raiz, 8);
-    imprimirEmLargura(raiz);
-    printf ("\n");
+    struct nodo *raiz = NULL;
+    inserir(&raiz, 5);
     inserir(&raiz, 6);
+    inserir(&raiz, 1);
     imprimirEmLargura(raiz);
-    printf ("\n");
-    /* inserir(&raiz, 1); */
-    /* imprimirEmLargura(raiz); */
-    /* printf ("\n"); */
-    /* imprimirEmLargura(raiz); */
-    /* printf ("\n"); */
-
-    /* imprimirEmLargura(raiz); */
 
 	return 0;
 }
