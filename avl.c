@@ -137,30 +137,55 @@ struct nodo *rotacionaDir(struct nodo *p)
     return r;
 }
 
+int alturaNodo(struct nodo *p)
+{
+    int altEsq, altDir;
+    if (p == NULL)
+        return -1;
+    altEsq = alturaNodo (p->fe);
+    altDir = alturaNodo (p->fd);
+    if (altEsq > altDir)
+        return altEsq + 1;
+
+    return altDir + 1;    
+}
+
+void corrigeBalanco(struct nodo *p)
+{
+    p->balanco = 0;
+    p->fe->balanco = (alturaNodo(p->fe->fd) - alturaNodo(p->fe->fe));
+    p->fd->balanco = (alturaNodo(p->fd->fd) - alturaNodo(p->fd->fe));
+}
+
 struct nodo *rebalancear(struct nodo *n)
 {
+    struct nodo *noPai;
+
     if (n->balanco == 2) {
         if (n->fd->balanco == 1) {
-            n->balanco = 0;
-            n->fd->balanco = 0;
-            return rotacionaEsq(n);
+            noPai = rotacionaEsq(n);
         }
-        if (n->fd->balanco == -1) {
+        else {
             rotacionaDir(n->fd);
-            return rotacionaEsq(n);
+            noPai = rotacionaEsq(n);
+        }
+    } else {
+        if (n->fe->balanco == -1) {
+            noPai = rotacionaDir(n);
+        } else {
+            rotacionaEsq(n->fe);
+            noPai = rotacionaDir(n);
         }
     }
-    if (n->fe->balanco == -1) {
-        n->balanco = 0;
-        n->fe->balanco = 0;
-        return rotacionaDir(n);
+    if (noPai->pai != NULL){
+        if (noPai->pai->fe == n)
+            noPai->pai->fe = noPai;
+        else
+            noPai->pai->fd = noPai;  
     }
-    if (n->fe->balanco == 1) {
-        rotacionaEsq(n->fe);
-        return rotacionaDir(n);
-    }
+    corrigeBalanco(noPai);
 
-    return NULL;
+    return noPai;
 }
 
 void atualizaBalanco(struct nodo *nodo, struct nodo **raiz)
