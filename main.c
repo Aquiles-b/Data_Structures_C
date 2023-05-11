@@ -27,6 +27,9 @@ int main(){
         case 'f':
             sts = 0;
             break;
+        case 'o':
+            imprimirEmOrdem(raiz);
+            break;
         default:
             break;
         }

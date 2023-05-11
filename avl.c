@@ -234,7 +234,11 @@ struct nodo *buscar(struct nodo *nodo, int chave)
 
 void imprimirEmOrdem(struct nodo *raiz)
 {
-    printf("Imprimindo em ordem\n");
+    if (raiz == NULL)
+        return;
+    imprimirEmOrdem(raiz->fe);
+    printf ("%d ", raiz->chave);
+    imprimirEmOrdem(raiz->fd);
 }
 
 void imprimirEmLargura(struct nodo *raiz)
