@@ -245,24 +245,35 @@ void imprimirEmLargura(struct nodo *raiz)
 {
     if (raiz == NULL)
         return;
-    struct nodo *aux;
+    struct nodo *no;
+    int qntNodos = 1;
+    int qntProxNodos = 0;
+    int nivelAtual = 0;
     struct fila *fNivel = iniciaFila();
-    struct fila *fProxNivel = iniciaFila();
-    int nivel = 0;
+    addItemFila(fNivel, raiz);
 
-    addItemFila(fProxNivel, raiz);
-
-    while (!filaVazia(fProxNivel)) {
-        fNivel = fProxNivel;
-        fProxNivel = iniciaFila();
-        printf ("[%d] ", nivel);
-        while (!filaVazia(fNivel)) {
-            aux = retiraItemFila(fNivel);
-            printf ("%d(%d) ", aux->chave, aux->balanco);
-            addItemFila(fProxNivel, aux->fe);
-            addItemFila(fProxNivel, aux->fd);
+    printf ("[%d] ", nivelAtual);
+    while (!filaVazia(fNivel)) {
+        no = retiraItemFila(fNivel);
+        if (no->fe != NULL) {
+            addItemFila(fNivel, no->fe);
+            qntProxNodos++;
         }
-        printf ("\n");
-        nivel++;
+        if (no->fd != NULL) {
+            addItemFila(fNivel, no->fd);
+            qntProxNodos++;
+        }
+        qntNodos--;
+        if (qntNodos == 0) {
+            printf ("%d(%d)\n", no->chave, no->balanco);
+            if (qntProxNodos != 0) {
+                nivelAtual++;
+                printf ("[%d] ", nivelAtual);
+                qntNodos = qntProxNodos;
+                qntProxNodos = 0;
+            }
+        } else {
+            printf ("%d(%d) ", no->chave, no->balanco);
+        }
     }
 }
