@@ -68,6 +68,14 @@ struct nodo *criaNodo(int chave)
     return n;
 }
 
+int ehRaiz(struct nodo *no)
+{
+    if (no == NULL)
+        return 0;
+
+    return no->pai == NULL;
+}
+
 struct nodo *insereNodo(struct nodo *n, int chave)
 {
     if (n->chave == chave)
@@ -97,7 +105,7 @@ struct nodo *rotacionaEsq(struct nodo *p)
     p->fd = q->fe;
     if (q->fe != NULL)
         q->fe->pai = p;
-    if (q->pai != NULL) {
+    if (!ehRaiz(q)) {
         if (q->pai->fe == p)
             q->pai->fe = q;
         else
@@ -116,7 +124,7 @@ struct nodo *rotacionaDir(struct nodo *p)
     p->fe = r->fd;
     if (r->fd != NULL)
         r->fd->pai = p;
-    if (r->pai != NULL) {
+    if (!ehRaiz(r)) {
         if (r->pai->fe == p)
             r->pai->fe = r;
         else
@@ -172,17 +180,25 @@ struct nodo *rebalancear(struct nodo *n)
     return noPai;
 }
 
+int balanceado(struct nodo *no)
+{
+    if (no == NULL)
+        return 0;
+
+    return no->balanco != 2 && no->balanco != -2;
+}
+
 void atualizaBalanco(struct nodo *nodo, struct nodo **raiz)
 {
     struct nodo *pai = nodo->pai;
-    if (pai == NULL)
+    if (ehRaiz(nodo))
         return;
     if (nodo == pai->fe)
         pai->balanco--;
     else
         pai->balanco++;
 
-    while (pai->pai != NULL && pai->balanco != 2 && pai->balanco != -2) {
+    while (!ehRaiz(pai) && balanceado(pai)) {
         nodo = pai;
         pai = pai->pai;
         if (nodo->balanco == 0)
@@ -192,8 +208,8 @@ void atualizaBalanco(struct nodo *nodo, struct nodo **raiz)
         else
             pai->balanco++;
     }
-    if (pai->balanco == 2 || pai->balanco == -2) {
-        if (pai->pai == NULL)
+    if (!balanceado(pai)) {
+        if (ehRaiz(pai))
             *raiz = rebalancear(pai);
         else
             rebalancear(pai);
@@ -232,13 +248,38 @@ struct nodo *buscar(struct nodo *nodo, int chave)
     return buscar(nodo->fe, chave);
 }
 
+struct nodo *maiorNodo(struct nodo *raiz)
+{
+    if (raiz->fd == NULL)
+        return raiz;
+
+    return maiorNodo(raiz->fd);
+}
+
+void imprimirEmOrdemAux(struct nodo *no)
+{
+    if (no == NULL)
+        return;
+    imprimirEmOrdemAux(no->fe);
+    printf ("%d ", no->chave);
+    imprimirEmOrdemAux(no->fd);
+}
+
 void imprimirEmOrdem(struct nodo *raiz)
 {
     if (raiz == NULL)
         return;
-    imprimirEmOrdem(raiz->fe);
-    printf ("%d ", raiz->chave);
-    imprimirEmOrdem(raiz->fd);
+
+    struct nodo *maior = maiorNodo(raiz);
+    if (ehRaiz(maior)) {
+        imprimirEmOrdemAux(raiz->fe);
+        printf ("%d\n", raiz->chave);
+    } else {
+        maior->pai->fd = NULL;
+        imprimirEmOrdemAux(raiz);
+        printf ("%d\n", maior->chave);
+        maior->pai->fd = maior;
+    }
 }
 
 void imprimirEmLargura(struct nodo *raiz)
@@ -246,9 +287,7 @@ void imprimirEmLargura(struct nodo *raiz)
     if (raiz == NULL)
         return;
     struct nodo *no;
-    int qntNodos = 1;
-    int qntProxNodos = 0;
-    int nivelAtual = 0;
+    int qntNodos = 1, qntProxNodos = 0, nivelAtual = 0;
     struct fila *fNivel = iniciaFila();
     addItemFila(fNivel, raiz);
 
