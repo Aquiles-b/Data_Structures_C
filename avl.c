@@ -254,8 +254,6 @@ void atualizaBalancoExcluir(struct nodo *nodo, struct nodo **raiz)
     while (!ehRaiz(pai) && pai->balanco == 0) {
         nodo = pai;
         pai = pai->pai;
-        if (nodo->balanco == 0)
-            return;
         if (nodo == pai->fe)
             pai->balanco++;
         else
