@@ -288,7 +288,7 @@ struct nodo *antecessorNodoAux(struct nodo *no)
 
 struct nodo *antecessorNodo(struct nodo *no)
 {
-    if (no == NULL)
+    if (no == NULL || no->fe == NULL)
         return NULL;
 
     return antecessorNodoAux(no->fe);
@@ -302,6 +302,8 @@ int excluir(struct nodo **raiz, int chave)
         return 0;
     if (!ehFolha(no)) {
         ant = antecessorNodo(no);
+        if (ant == NULL)
+            ant = no->fd;
         no->chave = ant->chave;
         no = ant;
     }
@@ -353,14 +355,14 @@ void imprimirEmOrdem(struct nodo *no)
     imprimirEmOrdemAux(no, maior->chave);
 }
 
-void addProxNodosFila(struct fila *fNivel, struct nodo *no, int *qntProxNodos)
+void addProxNodosFila(struct fila *f, struct nodo *no, int *qntProxNodos)
 {
     if (no->fe != NULL) {
-        addItemFila(fNivel, no->fe);
+        addItemFila(f, no->fe);
         (*qntProxNodos)++;
     }
     if (no->fd != NULL) {
-        addItemFila(fNivel, no->fd);
+        addItemFila(f, no->fd);
         (*qntProxNodos)++;
     }
 }
@@ -371,13 +373,13 @@ void imprimirEmLargura(struct nodo *raiz)
         return;
     struct nodo *no;
     int qntNodos = 1, qntProxNodos = 0, nivelAtual = 0;
-    struct fila *fNivel = iniciaFila();
-    addItemFila(fNivel, raiz);
+    struct fila *f = iniciaFila();
+    addItemFila(f, raiz);
 
     printf ("[%d] ", nivelAtual);
-    while (!filaVazia(fNivel)) {
-        no = retiraItemFila(fNivel);
-        addProxNodosFila(fNivel, no, &qntProxNodos);
+    while (!filaVazia(f)) {
+        no = retiraItemFila(f);
+        addProxNodosFila(f, no, &qntProxNodos);
         qntNodos--;
         if (qntNodos == 0) {
             printf ("%d(%d)\n", no->chave, no->balanco);
@@ -391,4 +393,6 @@ void imprimirEmLargura(struct nodo *raiz)
             printf ("%d(%d) ", no->chave, no->balanco);
         }
     }
+
+    free(f);
 }
