@@ -53,6 +53,7 @@ void imprimirDadosAlunos(){
     free(aluno);
 }
 
+// Cria um nodo e devolve um ponteiro para ele. Em caso de erro retorna NULL.
 struct nodo *criaNodo(int chave)
 {
     struct nodo *n = malloc(sizeof(struct nodo));
@@ -68,6 +69,7 @@ struct nodo *criaNodo(int chave)
     return n;
 }
 
+// Desaloca toda a memoria da arvore. Retorna NULL.
 struct nodo *destroiArvore(struct nodo *raiz)
 {
     if (raiz == NULL)
@@ -79,6 +81,7 @@ struct nodo *destroiArvore(struct nodo *raiz)
     return NULL;
 }
 
+// Retorna 1 se o nodo passado e raiz e 0 caso contrario.
 int ehRaiz(struct nodo *no)
 {
     if (no == NULL)
@@ -87,6 +90,8 @@ int ehRaiz(struct nodo *no)
     return no->pai == NULL;
 }
 
+// Insere um nodo na arvore com a chave passada e retorna um ponteiro para ele.
+// Em caso de erro, retorna NULL.
 struct nodo *insereNodo(struct nodo *n, int chave)
 {
     if (n->chave == chave)
@@ -97,6 +102,8 @@ struct nodo *insereNodo(struct nodo *n, int chave)
             return insereNodo(n->fe, chave);
 
         n->fe = criaNodo(chave);
+        if (n->fe == NULL)
+            return NULL;
         n->fe->pai = n;
         return n->fe;
     }
@@ -104,10 +111,14 @@ struct nodo *insereNodo(struct nodo *n, int chave)
         return insereNodo(n->fd, chave);
 
     n->fd = criaNodo(chave);
+    if (n->fd == NULL)
+        return NULL;
     n->fd->pai = n;
     return n->fd;
 }
 
+// Faz a rotacao para esquerda no nodo passado. Retorna um ponteiro para o pai
+// da arvore apos a rotacao.
 struct nodo *rotacionaEsq(struct nodo *p)
 {
     struct nodo *q = p->fd;
@@ -127,6 +138,8 @@ struct nodo *rotacionaEsq(struct nodo *p)
     return q;
 }
 
+// Faz a rotacao para direita no nodo passado. Retorna um ponteiro para o pai
+// da arvore apos a rotacao.
 struct nodo *rotacionaDir(struct nodo *p)
 {
     struct nodo *r = p->fe;
@@ -146,6 +159,7 @@ struct nodo *rotacionaDir(struct nodo *p)
     return r;
 }
 
+// Devolve a altura do nodo passado. Em caso de erro retorna -1.
 int alturaNodo(struct nodo *p)
 {
     int altEsq, altDir;
@@ -159,6 +173,7 @@ int alturaNodo(struct nodo *p)
     return altDir + 1;    
 }
 
+// Calcula o balanco do nodo passado.
 void corrigeBalanco(struct nodo *p)
 {
     p->balanco = 0;
@@ -166,6 +181,8 @@ void corrigeBalanco(struct nodo *p)
     p->fd->balanco = (alturaNodo(p->fd->fd) - alturaNodo(p->fd->fe));
 }
 
+// Escolhe o tipo de rotacao para balancear a arvore passada. Retorna um ponteiro
+// para a raiz da arvore apos o balanceamento.
 struct nodo *rebalancear(struct nodo *n)
 {
     struct nodo *noPai;
@@ -191,6 +208,7 @@ struct nodo *rebalancear(struct nodo *n)
     return noPai;
 }
 
+// Retorna 1 se o nodo esta balanceado e 0 caso contrario.
 int balanceado(struct nodo *no)
 {
     if (no == NULL)
@@ -199,6 +217,7 @@ int balanceado(struct nodo *no)
     return no->balanco != 2 && no->balanco != -2;
 }
 
+// Itera subindo a arvore atualizando o balanco apos uma nova insercao.
 void atualizaBalancoInserir(struct nodo *nodo, struct nodo **raiz)
 {
     struct nodo *pai = nodo->pai;
@@ -227,6 +246,8 @@ void atualizaBalancoInserir(struct nodo *nodo, struct nodo **raiz)
     }
 }
 
+// Insere um novo nodo na arvore com a chave passada e retorna um ponteiro 
+// para ele. Em caso de erro retorna NULL.
 struct nodo *inserir(struct nodo **raiz, int chave)
 {
     if (*raiz == NULL) {
@@ -242,6 +263,7 @@ struct nodo *inserir(struct nodo **raiz, int chave)
     return n;
 }
 
+// Retorna 1 se for folha, 0 se não for e -1 em caso de erro.
 int ehFolha(struct nodo *no)
 {
     if (no == NULL)
@@ -250,6 +272,7 @@ int ehFolha(struct nodo *no)
     return no->fe == NULL && no->fd == NULL;
 }
 
+// Itera subindo a arvore atualizando o balanco apos uma exclusao.
 void atualizaBalancoExcluir(struct nodo *nodo, struct nodo **raiz)
 {
     struct nodo *pai = nodo->pai;
@@ -261,7 +284,6 @@ void atualizaBalancoExcluir(struct nodo *nodo, struct nodo **raiz)
         pai->balanco--;
         pai->fd = NULL;
     }
-
     while (!ehRaiz(pai) && pai->balanco == 0) {
         nodo = pai;
         pai = pai->pai;
@@ -278,6 +300,7 @@ void atualizaBalancoExcluir(struct nodo *nodo, struct nodo **raiz)
     }
 }
 
+// Devolve o antecessor do nodo passado.
 struct nodo *antecessorNodoAux(struct nodo *no)
 {
     if (no->fd == NULL)
@@ -286,6 +309,8 @@ struct nodo *antecessorNodoAux(struct nodo *no)
     return antecessorNodoAux(no->fd);
 }
 
+// Devolve o antecessor do nodo passado. Em caso de erro ou o antecessor 
+// nao exista retorna NULL.
 struct nodo *antecessorNodo(struct nodo *no)
 {
     if (no == NULL || no->fe == NULL)
@@ -294,6 +319,8 @@ struct nodo *antecessorNodo(struct nodo *no)
     return antecessorNodoAux(no->fe);
 }
 
+// Remove o nodo da arvore que contem a chave passada.
+// Retorna 1 se der certo e 0 caso contrario.
 int excluir(struct nodo **raiz, int chave)
 {
     struct nodo *no, *ant;
@@ -313,6 +340,7 @@ int excluir(struct nodo **raiz, int chave)
     return 1;
 }
 
+// Devolve o nodo que contem a chave passada. Caso ele nao exista retorna NULL.
 struct nodo *buscar(struct nodo *nodo, int chave)
 {
     if (nodo == NULL)
@@ -325,6 +353,7 @@ struct nodo *buscar(struct nodo *nodo, int chave)
     return buscar(nodo->fe, chave);
 }
 
+// Devolve o nodo com a maior chave da arvore.
 struct nodo *maiorNodo(struct nodo *raiz)
 {
     if (raiz->fd == NULL)
@@ -346,6 +375,7 @@ void imprimirEmOrdemAux(struct nodo *no, int maior)
     imprimirEmOrdemAux(no->fd, maior);
 }
 
+// Imprime a arvore em ordem crescente.
 void imprimirEmOrdem(struct nodo *no)
 {
     if (no == NULL)
@@ -355,6 +385,8 @@ void imprimirEmOrdem(struct nodo *no)
     imprimirEmOrdemAux(no, maior->chave);
 }
 
+// Adiciona no final da fila os nodos filhos (caso existam) do nodo passado.
+// Aumenta o qntProxNodos para indicar quantos nodos estaram no proximo nivel.
 void addProxNodosFila(struct fila *f, struct nodo *no, int *qntProxNodos)
 {
     if (no->fe != NULL) {
@@ -367,6 +399,7 @@ void addProxNodosFila(struct fila *f, struct nodo *no, int *qntProxNodos)
     }
 }
 
+// Imprime a arvore em largura.
 void imprimirEmLargura(struct nodo *raiz)
 {
     if (raiz == NULL)
@@ -393,6 +426,5 @@ void imprimirEmLargura(struct nodo *raiz)
             printf ("%d(%d) ", no->chave, no->balanco);
         }
     }
-
     free(f);
 }
