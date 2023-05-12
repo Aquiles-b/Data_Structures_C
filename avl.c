@@ -345,8 +345,10 @@ int excluir(struct nodo **raiz, int chave)
         atualizaBalancoExcluir(no, raiz);
     } else {
         atualizaBalancoExcluir(no, raiz);
-        no->pai->fe = NULL;
-        no->pai->fd = NULL;
+        if (no->pai->fe != NULL && no == no->pai->fe)
+            no->pai->fe = NULL;
+        else
+            no->pai->fd = NULL;
     }
     free(no);
 
