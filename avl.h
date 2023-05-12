@@ -35,4 +35,7 @@ void imprimirEmOrdem(struct nodo* nodo);
 
 void imprimirEmLargura(struct nodo* raiz);
 
+//desaloca toda memoria da arvore. Retorna NULL.
+struct nodo *destroiArvore(struct nodo *raiz);
+
 #endif // AVL_H_

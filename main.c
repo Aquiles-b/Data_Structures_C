@@ -63,6 +63,7 @@ int main(){
             break;
         }
     }
+    raiz = destroiArvore(raiz);
 
     return 0;
 }
