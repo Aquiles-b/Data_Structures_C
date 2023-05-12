@@ -337,10 +337,10 @@ void imprimirEmOrdemAux(struct nodo *no, int maior)
         return;
 
     imprimirEmOrdemAux(no->fe, maior);
-    if (no->chave == maior)
-        printf ("%d\n", no->chave);
-    else
+    if (no->chave != maior)
         printf ("%d ", no->chave);
+    else
+        printf ("%d\n", no->chave);
     imprimirEmOrdemAux(no->fd, maior);
 }
 
