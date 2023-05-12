@@ -68,6 +68,17 @@ struct nodo *criaNodo(int chave)
     return n;
 }
 
+struct nodo *destroiArvore(struct nodo *raiz)
+{
+    if (raiz == NULL)
+        return NULL;
+    destroiArvore(raiz->fe);
+    destroiArvore(raiz->fd);
+    free(raiz);
+
+    return NULL;
+}
+
 int ehRaiz(struct nodo *no)
 {
     if (no == NULL)
@@ -320,30 +331,26 @@ struct nodo *maiorNodo(struct nodo *raiz)
     return maiorNodo(raiz->fd);
 }
 
-void imprimirEmOrdemAux(struct nodo *no)
+void imprimirEmOrdemAux(struct nodo *no, int maior)
 {
     if (no == NULL)
         return;
-    imprimirEmOrdemAux(no->fe);
-    printf ("%d ", no->chave);
-    imprimirEmOrdemAux(no->fd);
+
+    imprimirEmOrdemAux(no->fe, maior);
+    if (no->chave == maior)
+        printf ("%d\n", no->chave);
+    else
+        printf ("%d ", no->chave);
+    imprimirEmOrdemAux(no->fd, maior);
 }
 
-void imprimirEmOrdem(struct nodo *raiz)
+void imprimirEmOrdem(struct nodo *no)
 {
-    if (raiz == NULL)
+    if (no == NULL)
         return;
 
-    struct nodo *maior = maiorNodo(raiz);
-    if (ehRaiz(maior)) {
-        imprimirEmOrdemAux(raiz->fe);
-        printf ("%d\n", raiz->chave);
-    } else {
-        maior->pai->fd = NULL;
-        imprimirEmOrdemAux(raiz);
-        printf ("%d\n", maior->chave);
-        maior->pai->fd = maior;
-    }
+    struct nodo *maior = maiorNodo(no);
+    imprimirEmOrdemAux(no, maior->chave);
 }
 
 void addProxNodosFila(struct fila *fNivel, struct nodo *no, int *qntProxNodos)
