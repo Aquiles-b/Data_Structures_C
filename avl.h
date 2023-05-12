@@ -1,6 +1,8 @@
 #ifndef AVL_H_
 #define AVL_H_
 
+#ifndef STRUCT_AVL
+#define STRUCT_AVL
 struct nodo {
     int chave;
     int balanco;
@@ -8,6 +10,7 @@ struct nodo {
     struct nodo *fe;
     struct nodo *fd;
 };
+#endif 
 
 struct aluno{
     char* nome;//nome completo

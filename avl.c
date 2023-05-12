@@ -1,6 +1,5 @@
 #include "avl.h"
 #include "fila.h"
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -426,5 +425,5 @@ void imprimirEmLargura(struct nodo *raiz)
             printf ("%d(%d) ", no->chave, no->balanco);
         }
     }
-    free(f);
+    destroiFila(f);
 }
