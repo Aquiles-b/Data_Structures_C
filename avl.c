@@ -275,14 +275,12 @@ int ehFolha(struct nodo *no)
 void atualizaBalancoExcluir(struct nodo *nodo, struct nodo **raiz)
 {
     struct nodo *pai = nodo->pai;
-    if (nodo == pai->fe) {
+    
+    if (pai->fe != NULL && nodo == pai->fe)
         pai->balanco++;
-        pai->fe = NULL;
-    }
-    else {
+    else
         pai->balanco--;
-        pai->fd = NULL;
-    }
+
     while (!ehRaiz(pai) && pai->balanco == 0) {
         nodo = pai;
         pai = pai->pai;
@@ -318,22 +316,38 @@ struct nodo *antecessorNodo(struct nodo *no)
     return antecessorNodoAux(no->fe);
 }
 
+// Substitui o nodo passado pelo seu antecessor.
+void transplante(struct nodo **no)
+{
+    struct nodo *ant;
+    ant = antecessorNodo(*no);
+    if (ant == NULL) {
+        ant = (*no)->fd;
+    }
+    else if (ant->fe != NULL) {
+        ant->pai->fd = ant->fe;
+        ant->fe->pai = ant->pai;
+    }
+    (*no)->chave = ant->chave;
+    (*no) = ant;
+}
+
 // Remove o nodo da arvore que contem a chave passada.
 // Retorna 1 se der certo e 0 caso contrario.
 int excluir(struct nodo **raiz, int chave)
 {
-    struct nodo *no, *ant;
+    struct nodo *no;
     no = buscar(*raiz, chave);
     if (no == NULL)
         return 0;
     if (!ehFolha(no)) {
-        ant = antecessorNodo(no);
-        if (ant == NULL)
-            ant = no->fd;
-        no->chave = ant->chave;
-        no = ant;
+        transplante(&no);
+        atualizaBalancoExcluir(no, raiz);
+    } else {
+        atualizaBalancoExcluir(no, raiz);
+        no->pai->fe = NULL;
+        no->pai->fd = NULL;
     }
-    atualizaBalancoExcluir(no, raiz);
     free(no);
 
     return 1;
