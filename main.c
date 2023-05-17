@@ -9,8 +9,10 @@
 void adicionarNodo(struct nodo **raiz, char *entrada)
 {
     int chave;
-    sscanf(entrada + 1, "%d", &chave);
-    struct nodo *sts = inserir(raiz, chave);
+    struct nodo *sts = NULL;
+    int leitura = sscanf(entrada + 1, "%d", &chave);
+    if (leitura != -1)
+        sts = inserir(raiz, chave);
     if (sts == NULL)
         printf ("Falha ao inserir.\n");
 }
@@ -33,9 +35,11 @@ void buscarNodo(struct nodo *raiz, char *entrada)
 // Caso a remocao nao seja possivel, imprime no stdout uma mensagem de erro.
 void excluirNodo(struct nodo **raiz, char *entrada)
 {
-    int chave;
-    sscanf(entrada + 1, "%d", &chave);
-    int sts = excluir(raiz, chave);
+    int chave = 0;
+    int sts = 0;
+    int leitura = sscanf(entrada + 1, "%d", &chave);
+    if (leitura != -1)
+        sts = excluir(raiz, chave);
     if (sts == 0)
         printf ("Falha ao remover %d.\n", chave);
 }

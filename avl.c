@@ -175,7 +175,7 @@ int alturaNodo(struct nodo *p)
 // Calcula o balanco do nodo passado.
 void corrigeBalanco(struct nodo *p)
 {
-    p->balanco = 0;
+    p->balanco = (alturaNodo(p->fd) - alturaNodo(p->fe));
     p->fe->balanco = (alturaNodo(p->fe->fd) - alturaNodo(p->fe->fe));
     p->fd->balanco = (alturaNodo(p->fd->fd) - alturaNodo(p->fd->fe));
 }
@@ -272,14 +272,21 @@ int ehFolha(struct nodo *no)
 }
 
 // Itera subindo a arvore atualizando o balanco apos uma exclusao.
-void atualizaBalancoExcluir(struct nodo *nodo, struct nodo **raiz)
+void atualizaBalancoExcluir(struct nodo *nodo, struct nodo **raiz, struct nodo *fe)
 {
     struct nodo *pai = nodo->pai;
+
+    if (ehRaiz(nodo))
+        return;
     
-    if (pai->fe != NULL && nodo == pai->fe)
+    if (pai->fe != NULL && nodo == pai->fe) {
         pai->balanco++;
-    else
+        pai->fe = fe;
+    }
+    else {
         pai->balanco--;
+        pai->fd = fe;
+    }
 
     while (!ehRaiz(pai) && pai->balanco == 0) {
         nodo = pai;
@@ -316,39 +323,45 @@ struct nodo *antecessorNodo(struct nodo *no)
     return antecessorNodoAux(no->fe);
 }
 
-// Substitui o nodo passado pelo seu antecessor.
-void transplante(struct nodo **no)
+// Substitui o nodo passado pelo seu antecessor. Caso o antecessor tenha filho 
+// esquerdo, ele é retornado.
+struct nodo *transplante(struct nodo **no)
 {
+    struct nodo* filhoEsq = NULL;
     struct nodo *ant;
     ant = antecessorNodo(*no);
     if (ant == NULL) {
         ant = (*no)->fd;
     }
     else if (ant->fe != NULL) {
-        ant->pai->fd = ant->fe;
-        ant->fe->pai = ant->pai;
+        filhoEsq = ant->fe;
+        filhoEsq->pai = ant->pai;
     }
     (*no)->chave = ant->chave;
     (*no) = ant;
+
+    return filhoEsq;
 }
 
 // Remove o nodo da arvore que contem a chave passada.
 // Retorna 1 se der certo e 0 caso contrario.
 int excluir(struct nodo **raiz, int chave)
 {
-    struct nodo *no;
+    struct nodo *no, *filhoEsq;
     no = buscar(*raiz, chave);
     if (no == NULL)
         return 0;
+
+    if (ehRaiz(no) && ehFolha(no)) {
+        (*raiz) = NULL;
+        free(no);
+        return 1;
+    }
     if (!ehFolha(no)) {
-        transplante(&no);
-        atualizaBalancoExcluir(no, raiz);
+        filhoEsq = transplante(&no);
+        atualizaBalancoExcluir(no, raiz, filhoEsq);
     } else {
-        atualizaBalancoExcluir(no, raiz);
-        if (no->pai->fe != NULL && no == no->pai->fe)
-            no->pai->fe = NULL;
-        else
-            no->pai->fd = NULL;
+        atualizaBalancoExcluir(no, raiz, NULL);
     }
     free(no);
 
