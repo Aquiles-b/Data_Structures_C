@@ -12,19 +12,6 @@ struct nodo {
 };
 #endif 
 
-struct aluno{
-    char* nome;//nome completo
-    char* nomeDinf;//nome de usuário nas servidoras do dinf
-    unsigned int grr;
-};
-
-struct aluno* getAluno1();
-
-//retorne NULL se o aluno2 não existir
-struct aluno* getAluno2();
-
-void imprimirDadosAlunos();
-
 //retorna NULL se não foi possível inserir
 struct nodo* inserir(struct nodo** raiz, int chave);
 

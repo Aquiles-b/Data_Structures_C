@@ -1,5 +1,5 @@
 parametrosCompilacao=-Wall -g #-Wshadow
-nomePrograma=trab_20221230
+nomePrograma=avl_interface
 
 all: $(nomePrograma)
 

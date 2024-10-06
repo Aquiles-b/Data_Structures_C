@@ -7,8 +7,6 @@
 
 int main()
 {
-	imprimirDadosAlunos();
-
     size_t tamTabela = 0;
     scanf("%ld", &tamTabela);
     if (tamTabela == 0) {

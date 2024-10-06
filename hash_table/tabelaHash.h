@@ -9,22 +9,9 @@ struct nodoHash {
     struct nodoHash *anter;
 };
 
-struct aluno {
-    char *nome;//nome completo
-    char *nomeDinf;//nome de usuário nas servidoras do dinf
-    unsigned int grr;
-};
-
 struct hashTable {
     struct nodoHash **nodos;
 };
-
-struct aluno *getAluno1();
-
-//retorne NULL se o aluno2 não existir
-struct aluno *getAluno2();
-
-void imprimirDadosAlunos();
 
 //aloca a tabela hash na memória
 struct hashTable *gerarTabelaHash(size_t tamTabela);

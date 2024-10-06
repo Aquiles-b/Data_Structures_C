@@ -10,54 +10,6 @@ void matarProgramaFaltaMemoria()
     exit(1);
 }
 
-struct aluno *getAluno1()
-{
-    struct aluno *retorno = malloc(sizeof(struct aluno));
-    if (!retorno) matarProgramaFaltaMemoria();
-    retorno->nome = malloc(sizeof("Bruno Aquiles de Lima"));  // sizeof conta o \0
-    if (!retorno->nome)
-        matarProgramaFaltaMemoria();
-    retorno->nomeDinf = malloc(sizeof("bal22"));
-    if (!(retorno->nomeDinf))
-        matarProgramaFaltaMemoria();
-
-    strcpy(retorno->nome, "Bruno Aquiles de Lima");
-    strcpy(retorno->nomeDinf, "bal22");
-    retorno->grr = 20221230;
-
-    return retorno;
-}
-
-struct aluno *getAluno2()
-{
-    return NULL;
-}
-
-void imprimirDadosAlunos()
-{
-    struct aluno *aluno = getAluno1();
-
-    printf("Trabalho de %s\n", aluno->nome);
-    printf("Login Dinf %s\n", aluno->nomeDinf);
-    printf("GRR %u\n\n", aluno->grr);
-
-    free(aluno->nome);
-    free(aluno->nomeDinf);
-    free(aluno);
-
-    aluno = getAluno2();
-    if (!aluno) return;
-
-    printf("...E... \n\n");
-    printf("Trabalho de %s\n", aluno->nome);
-    printf("Login Dinf %s\n", aluno->nomeDinf);
-    printf("GRR %u\n\n", aluno->grr);
-
-    free(aluno->nome);
-    free(aluno->nomeDinf);
-    free(aluno);
-}
-
 // Gera a tabela hash com o tamanho @tamTabela.
 // Retorna um ponteiro para a tabela criada.
 struct hashTable *gerarTabelaHash(size_t tamTabela)

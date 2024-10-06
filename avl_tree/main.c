@@ -62,8 +62,6 @@ void pegaEntrada(char *entrada)
 }
 
 int main(){
-    imprimirDadosAlunos();
-
     struct nodo *raiz = NULL;
     char *entrada = malloc(sizeof(char) * TAM_STR);
     int sts = 1;
